@@ -11,36 +11,46 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 
 @Service(value = "courseService")
-public class CourseServiceImpl implements CourseService
-{
+public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courserepos;
 
     @Override
-    public ArrayList<Course> findAll()
-    {
+    public ArrayList<Course> findAll() {
         ArrayList<Course> list = new ArrayList<>();
         courserepos.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
 
     @Override
-    public ArrayList<CountStudentsInCourses> getCountStudentsInCourse()
-    {
+    public ArrayList<CountStudentsInCourses> getCountStudentsInCourse() {
         return courserepos.getCountStudentsInCourse();
     }
 
     @Transactional
     @Override
-    public void delete(long id) throws EntityNotFoundException
-    {
-        if (courserepos.findById(id).isPresent())
-        {
+    public void delete(long id) throws EntityNotFoundException {
+        if (courserepos.findById(id).isPresent()) {
             courserepos.deleteCourseFromStudcourses(id);
             courserepos.deleteById(id);
-        } else
-        {
+        } else {
             throw new EntityNotFoundException(Long.toString(id));
         }
+    }
+
+    @Transactional
+    @Override
+    public Course findCourseById(long id) throws EntityNotFoundException {
+        if (courserepos.findById(id).isPresent()) {
+            return courserepos.findById(id).get();
+        } else {
+            throw new EntityNotFoundException(Long.toString(id));
+        }
+    }
+
+    @Transactional
+    @Override
+    public void save(Course course) {
+
     }
 }
